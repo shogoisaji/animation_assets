@@ -1,0 +1,38 @@
+name: animation_assets
+description: A new Flutter project.
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.1.2 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod:
+  riverpod_annotation:
+
+  flutter_hooks:
+  hooks_riverpod:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  build_runner:
+  riverpod_generator:
+
+  flutter_lints: ^2.0.0
+
+flutter:
+  fonts:
+    - family: M_PLUS_Rounded_1c
+      fonts:
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Black.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-ExtraBold.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Light.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Medium.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf
+        - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Thin.ttf
+  uses-material-design: true
