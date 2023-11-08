@@ -53,5 +53,19 @@ final countDownStateProvider =
 );
 
 typedef _$CountDownState = AutoDisposeNotifier<bool>;
+String _$ballModelHash() => r'0e7cb2a9fe3178b43599d9b25ae66b9ff840bda4';
+
+/// See also [BallModel].
+@ProviderFor(BallModel)
+final ballModelProvider = AutoDisposeNotifierProvider<BallModel, Ball>.internal(
+  BallModel.new,
+  name: r'ballModelProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$ballModelHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$BallModel = AutoDisposeNotifier<Ball>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

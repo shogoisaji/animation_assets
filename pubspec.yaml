@@ -36,3 +36,5 @@ flutter:
         - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf
         - asset: assets/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Thin.ttf
   uses-material-design: true
+  assets:
+    - assets/images/elephant.png

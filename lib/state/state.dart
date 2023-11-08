@@ -1,5 +1,8 @@
+import 'package:animation_assets/models/ball.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vector_math/vector_math.dart' as vector;
 
 part 'state.g.dart';
 
@@ -49,4 +52,18 @@ class CountDownState extends _$CountDownState {
 
   void start() => state = true;
   void stop() => state = false;
+}
+
+@riverpod
+class BallModel extends _$BallModel {
+  @override
+  Ball build() => Ball(
+      radius: 20.0,
+      velocity: vector.Vector2(10.0, 10.0),
+      position: vector.Vector2(30.0, 30.0),
+      color: Colors.red);
+
+  void update(Ball ball) => state = ball;
+  void chengeVelocity(vector.Vector2 velocity) => state.velocity = velocity;
+  void chengePosition(vector.Vector2 position) => state.position = position;
 }
