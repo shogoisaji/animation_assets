@@ -4,7 +4,7 @@ import 'package:animation_assets/animations/reflect_animation.dart';
 import 'package:flutter/material.dart';
 
 class ReflectPage extends StatefulWidget {
-  const ReflectPage({super.key});
+  const ReflectPage({Key? key}) : super(key: key);
 
   @override
   ReflectPageState createState() => ReflectPageState();
@@ -13,9 +13,8 @@ class ReflectPage extends StatefulWidget {
 const Size animationObjectSize = Size(100, 100);
 const int randomMax = 20;
 
-class ReflectPageState extends State<ReflectPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
+class ReflectPageState extends State<ReflectPage> {
+  // late AnimationController animationController;
   Rect screenSize = Rect.zero;
   Offset animationObjectVelocity = const Offset(10, 10);
   bool isMoving = false;
@@ -28,26 +27,32 @@ class ReflectPageState extends State<ReflectPage>
             fit: BoxFit.fill, image: AssetImage('assets/images/elephant.png')),
       ));
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getScreenSize();
-    });
-    animationController =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-  }
+  final GlobalKey<ReflectAnimationState> _key =
+      GlobalKey<ReflectAnimationState>();
 
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // build後にスクリーンサイズを取得
+  //   // WidgetsBinding.instance.addPostFrameCallback((_) {
+  //   //   getScreenSize();
+  //   // });
+  //   // animationController =
+  //   //     AnimationController(duration: const Duration(seconds: 1), vsync: this);
+  // }
+
+  // @override
+  // void dispose() {
+  //   // animationController.stop();
+  //   // animationController.dispose();
+  //   super.dispose();
+  // }
 
   void getScreenSize() {
     final RenderBox? renderBox =
         _screenContainerKey.currentContext?.findRenderObject() as RenderBox?;
     final getScreenSize = renderBox?.size ?? Size.zero;
+
     setState(() {
       screenSize =
           Rect.fromLTRB(0, 0, getScreenSize.width, getScreenSize.height);
@@ -56,10 +61,9 @@ class ReflectPageState extends State<ReflectPage>
 
   void animationSwitch() {
     if (isMoving) {
-      animationController.reset();
-      animationController.stop();
+      _key.currentState?.animationController.stop();
     } else {
-      animationController.repeat();
+      _key.currentState?.animationController.repeat();
     }
   }
 
@@ -91,26 +95,42 @@ class ReflectPageState extends State<ReflectPage>
                   bottom: 24,
                   left: 24,
                   child: ElevatedButton(
-                      child:
-                          isMoving ? const Text('Stop') : const Text('Start'),
+                      child: isMoving
+                          ? const Icon(Icons.stop, color: Colors.black)
+                          : const Icon(Icons.play_arrow, color: Colors.black),
                       onPressed: () {
                         animationSwitch();
-                        isMoving = !isMoving;
+                        getScreenSize();
+                        setState(() {
+                          isMoving = !isMoving;
+                        });
                       })),
               Positioned(
                   bottom: 64,
                   left: 24,
                   child: ElevatedButton(
-                      child: const Text('Shuffle'),
+                      child: const Icon(Icons.shuffle, color: Colors.black),
                       onPressed: () {
+                        getScreenSize();
                         shuffleVelocity();
                         animationObjectVelocity = Offset(
                             Random().nextDouble() * randomMax,
                             Random().nextDouble() * randomMax);
                       })),
+              Positioned(
+                  bottom: 104,
+                  left: 24,
+                  child: ElevatedButton(
+                      child: const Icon(Icons.screenshot_monitor,
+                          color: Colors.black),
+                      onPressed: () {
+                        getScreenSize();
+                      })),
               ReflectAnimation(
+                  key: _key,
                   screen: screenSize,
-                  animationController: animationController,
+                  // animationController: AnimationController(
+                  //     duration: const Duration(seconds: 1),),
                   defaultVelocity: animationObjectVelocity,
                   size: animationObjectSize,
                   child: animationObject),

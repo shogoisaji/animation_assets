@@ -1,3 +1,4 @@
+import 'package:animation_assets/state/animation_state_provider.dart';
 import 'package:flutter/material.dart';
 
 class ReflectAnimation extends StatefulWidget {
@@ -5,31 +6,47 @@ class ReflectAnimation extends StatefulWidget {
   final Size size;
   final Rect screen;
   final Offset defaultVelocity;
-  final AnimationController animationController;
+  // final AnimationController animationController;
 
-  ReflectAnimation(
+  const ReflectAnimation(
       {super.key,
       required this.child,
       required this.screen,
-      required this.animationController,
+      // required this.animationController,
       required this.defaultVelocity,
       required this.size});
 
   @override
-  _ReflectAnimationState createState() => _ReflectAnimationState();
+  ReflectAnimationState createState() => ReflectAnimationState();
 }
 
-class _ReflectAnimationState extends State<ReflectAnimation> {
+class ReflectAnimationState extends State<ReflectAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController animationController;
   late Animation<Offset> animation;
   Offset position = Offset.zero;
   late Offset velocity;
 
+  final AnimationStateControllerProvider animationState =
+      AnimationStateControllerProvider();
+
   @override
   void initState() {
     super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
     velocity = widget.defaultVelocity;
 
-    widget.animationController.addListener(() {
+    switch (animationState.animationControllerState) {
+      case AnimationStateController.start:
+        animationController.repeat();
+        break;
+      case AnimationStateController.stop:
+        animationController.stop();
+        break;
+    }
+
+    animationController.addListener(() {
       setState(() {
         if (position.dx < 0 ||
             position.dx > widget.screen.width - widget.size.width) {
@@ -43,8 +60,12 @@ class _ReflectAnimationState extends State<ReflectAnimation> {
         position += velocity;
       });
     });
+  }
 
-    print('animation widget : ${velocity}');
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,13 +76,12 @@ class _ReflectAnimationState extends State<ReflectAnimation> {
         velocity = widget.defaultVelocity;
       });
     }
-    print('animation widget : ${velocity}');
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: widget.animationController,
+        animation: animationController,
         builder: (context, child) => Transform.translate(
               offset: position,
               child: widget.child,

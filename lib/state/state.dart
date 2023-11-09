@@ -67,3 +67,22 @@ class BallModel extends _$BallModel {
   void chengeVelocity(vector.Vector2 velocity) => state.velocity = velocity;
   void chengePosition(vector.Vector2 position) => state.position = position;
 }
+
+enum AnimationState {
+  start,
+  stop,
+}
+
+@riverpod
+class AnimationStateProvider extends _$AnimationStateProvider {
+  @override
+  AnimationState build() => AnimationState.stop;
+
+  void changeState() {
+    if (state == AnimationState.start) {
+      state = AnimationState.stop;
+    } else {
+      state = AnimationState.start;
+    }
+  }
+}

@@ -53,7 +53,7 @@ final countDownStateProvider =
 );
 
 typedef _$CountDownState = AutoDisposeNotifier<bool>;
-String _$ballModelHash() => r'0e7cb2a9fe3178b43599d9b25ae66b9ff840bda4';
+String _$ballModelHash() => r'7a25f0b5fc8eb796afff5e4d29cb96e141b71915';
 
 /// See also [BallModel].
 @ProviderFor(BallModel)
@@ -67,5 +67,22 @@ final ballModelProvider = AutoDisposeNotifierProvider<BallModel, Ball>.internal(
 );
 
 typedef _$BallModel = AutoDisposeNotifier<Ball>;
+String _$animationStateProviderHash() =>
+    r'8fbb113f2ea1bbe7376c000bd8c17609c61cf6c4';
+
+/// See also [AnimationStateProvider].
+@ProviderFor(AnimationStateProvider)
+final animationStateProviderProvider = AutoDisposeNotifierProvider<
+    AnimationStateProvider, AnimationState>.internal(
+  AnimationStateProvider.new,
+  name: r'animationStateProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$animationStateProviderHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef _$AnimationStateProvider = AutoDisposeNotifier<AnimationState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
