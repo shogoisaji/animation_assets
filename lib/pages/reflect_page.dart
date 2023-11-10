@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:animation_assets/animations/reflect_animation.dart';
 import 'package:animation_assets/models/animate_child.dart';
 import 'package:flutter/material.dart';

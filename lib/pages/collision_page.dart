@@ -1,92 +1,73 @@
-import 'package:animation_assets/theme/color_theme.dart';
-import 'package:animation_assets/utils/line_painter.dart';
+import 'package:animation_assets/models/animate_child.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:math' as math;
-
-import 'package:flutter_hooks/flutter_hooks.dart';
-
-class CollisionPage extends HookWidget {
+class CollisionPage extends StatefulWidget {
   const CollisionPage({super.key});
 
-  final radius = 25.0;
+  @override
+  State<CollisionPage> createState() => _CollisionPageState();
+}
+
+final List<AnimateChild> animateChildList = <AnimateChild>[
+  AnimateChild(
+    childWidget: Container(
+        width: 100,
+        height: 100,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fill,
+              image: AssetImage('assets/images/elephant.png')),
+        )),
+    childWidgetSize: const Size(100, 100),
+  ),
+  AnimateChild(
+    childWidget: Container(
+        width: 100,
+        height: 100,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fill, image: AssetImage('assets/images/pen.png')),
+        )),
+    childWidgetSize: const Size(100, 100),
+  )
+];
+
+class _CollisionPageState extends State<CollisionPage>
+    with TickerProviderStateMixin {
+  late AnimationController animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final startX = useState(MediaQuery.of(context).size.width / 2);
-    final startY = useState(MediaQuery.of(context).size.height / 2);
-    final dragEndX = useState(MediaQuery.of(context).size.width / 2);
-    final dragEndY = useState(MediaQuery.of(context).size.height / 2);
-    final isTouching = useState(false);
-    final dragDistance = useState(20.0);
-
-    return Stack(
-      children: [
-        isTouching.value
-            ? CustomPaint(
-                painter: LinePainter(
-                  start: Offset(startX.value, startY.value),
-                  end: Offset(dragEndX.value, dragEndY.value),
+    return Column(children: [
+      Expanded(
+          child: Container(
+              color: Colors.grey,
+              child: Stack(children: [
+                const Center(
+                  child: Text('collision',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 48,
+                          color: Colors.white)),
                 ),
-              )
-            : Container(),
-        Positioned(
-          top: startY.value - radius,
-          left: startX.value - radius,
-          child: GestureDetector(
-            onPanDown: (details) {
-              isTouching.value = true;
-              startX.value = details.localPosition.dx;
-              startY.value = details.localPosition.dy;
-              print('Is touching: $isTouching');
-            },
-            child: CircleAvatar(
-              radius: radius,
-              backgroundColor: MyTheme.red,
-            ),
-          ),
-        ),
-        Positioned(
-          top: startY.value - dragDistance.value,
-          left: startX.value - dragDistance.value,
-          child: Container(
-            width: dragDistance.value * 2,
-            height: dragDistance.value * 2,
-            decoration: BoxDecoration(
-              border: Border.all(color: MyTheme.red, width: 2),
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        GestureDetector(
-          onPanDown: (details) {
-            isTouching.value = true;
-            // startX.value = details.localPosition.dx;
-            // startY.value = details.localPosition.dy;
-            print('Is touching: $isTouching');
-          },
-          onPanUpdate: (DragUpdateDetails details) {
-            dragEndX.value = details.localPosition.dx;
-            dragEndY.value = details.localPosition.dy;
-
-            dragDistance.value = math.sqrt((dragEndX.value - startX.value) *
-                    (dragEndX.value - startX.value) +
-                (dragEndY.value - startY.value) *
-                    (dragEndY.value - startY.value));
-            print(dragDistance);
-          },
-          onPanEnd: (details) {
-            isTouching.value = false;
-            dragDistance.value = 0;
-            print('Is touching: $isTouching');
-          },
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            color: Colors.transparent,
-          ),
-        ),
-      ],
-    );
+                Positioned(
+                  top: 100,
+                  left: 100,
+                  child: animateChildList[0].childWidget,
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: animateChildList[1].childWidget,
+                ),
+              ])))
+    ]);
   }
 }
