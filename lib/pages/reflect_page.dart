@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:animation_assets/animations/reflect_animation.dart';
+import 'package:animation_assets/models/animate_child.dart';
 import 'package:flutter/material.dart';
 
 class ReflectPage extends StatefulWidget {
@@ -10,43 +11,40 @@ class ReflectPage extends StatefulWidget {
   ReflectPageState createState() => ReflectPageState();
 }
 
-const Size animationObjectSize = Size(100, 100);
 const int randomMax = 20;
 
-class ReflectPageState extends State<ReflectPage> {
-  // late AnimationController animationController;
+class ReflectPageState extends State<ReflectPage>
+    with TickerProviderStateMixin {
+  late AnimationController animationController;
   Rect screenSize = Rect.zero;
-  Offset animationObjectVelocity = const Offset(10, 10);
   bool isMoving = false;
   final GlobalKey _screenContainerKey = GlobalKey();
-  final Widget animationObject = Container(
-      width: animationObjectSize.width,
-      height: animationObjectSize.height,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-            fit: BoxFit.fill, image: AssetImage('assets/images/elephant.png')),
-      ));
+  AnimateChild animateChild = AnimateChild(
+    childWidget: Container(
+        width: 100,
+        height: 100,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              fit: BoxFit.fill,
+              image: AssetImage('assets/images/elephant.png')),
+        )),
+    childWidgetSize: const Size(100, 100),
+  );
 
-  final GlobalKey<ReflectAnimationState> _key =
-      GlobalKey<ReflectAnimationState>();
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    Future.microtask(() => getScreenSize());
+  }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // build後にスクリーンサイズを取得
-  //   // WidgetsBinding.instance.addPostFrameCallback((_) {
-  //   //   getScreenSize();
-  //   // });
-  //   // animationController =
-  //   //     AnimationController(duration: const Duration(seconds: 1), vsync: this);
-  // }
-
-  // @override
-  // void dispose() {
-  //   // animationController.stop();
-  //   // animationController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    animationController.stop();
+    animationController.dispose();
+    super.dispose();
+  }
 
   void getScreenSize() {
     final RenderBox? renderBox =
@@ -61,17 +59,18 @@ class ReflectPageState extends State<ReflectPage> {
 
   void animationSwitch() {
     if (isMoving) {
-      _key.currentState?.animationController.stop();
+      debugPrint('animation:stop');
+      animationController.stop();
+      setState(() {
+        isMoving = false;
+      });
     } else {
-      _key.currentState?.animationController.repeat();
+      debugPrint('animation:start');
+      animationController.repeat();
+      setState(() {
+        isMoving = true;
+      });
     }
-  }
-
-  void shuffleVelocity() {
-    setState(() {
-      animationObjectVelocity =
-          Offset(Random().nextDouble() * 30, Random().nextDouble() * 30);
-    });
   }
 
   @override
@@ -85,7 +84,7 @@ class ReflectPageState extends State<ReflectPage> {
             child: Stack(children: [
               Center(
                 child: Text(
-                    '${animationObjectVelocity.dx.abs().toStringAsFixed(2)} : ${animationObjectVelocity.dy.abs().toStringAsFixed(2)}',
+                    '${animateChild.velocity.dx.abs().toStringAsFixed(2)} : ${animateChild.velocity.dy.abs().toStringAsFixed(2)}',
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 48,
@@ -100,10 +99,6 @@ class ReflectPageState extends State<ReflectPage> {
                           : const Icon(Icons.play_arrow, color: Colors.black),
                       onPressed: () {
                         animationSwitch();
-                        getScreenSize();
-                        setState(() {
-                          isMoving = !isMoving;
-                        });
                       })),
               Positioned(
                   bottom: 64,
@@ -111,11 +106,9 @@ class ReflectPageState extends State<ReflectPage> {
                   child: ElevatedButton(
                       child: const Icon(Icons.shuffle, color: Colors.black),
                       onPressed: () {
-                        getScreenSize();
-                        shuffleVelocity();
-                        animationObjectVelocity = Offset(
-                            Random().nextDouble() * randomMax,
-                            Random().nextDouble() * randomMax);
+                        setState(() {
+                          animateChild.shuffleVelocity();
+                        });
                       })),
               Positioned(
                   bottom: 104,
@@ -125,15 +118,12 @@ class ReflectPageState extends State<ReflectPage> {
                           color: Colors.black),
                       onPressed: () {
                         getScreenSize();
+                        animateChild.resetPosition();
                       })),
               ReflectAnimation(
-                  key: _key,
+                  animationController: animationController,
                   screen: screenSize,
-                  // animationController: AnimationController(
-                  //     duration: const Duration(seconds: 1),),
-                  defaultVelocity: animationObjectVelocity,
-                  size: animationObjectSize,
-                  child: animationObject),
+                  animateChild: animateChild),
             ]),
           ),
         ),

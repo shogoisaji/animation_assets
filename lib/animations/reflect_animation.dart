@@ -1,90 +1,55 @@
-import 'package:animation_assets/state/animation_state_provider.dart';
+import 'package:animation_assets/models/animate_child.dart';
 import 'package:flutter/material.dart';
 
 class ReflectAnimation extends StatefulWidget {
-  final Widget child;
-  final Size size;
+  final AnimateChild animateChild;
+  final AnimationController animationController;
   final Rect screen;
-  final Offset defaultVelocity;
-  // final AnimationController animationController;
 
-  const ReflectAnimation(
-      {super.key,
-      required this.child,
-      required this.screen,
-      // required this.animationController,
-      required this.defaultVelocity,
-      required this.size});
+  const ReflectAnimation({
+    super.key,
+    required this.animateChild,
+    required this.animationController,
+    required this.screen,
+  });
 
   @override
   ReflectAnimationState createState() => ReflectAnimationState();
 }
 
-class ReflectAnimationState extends State<ReflectAnimation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController animationController;
-  late Animation<Offset> animation;
-  Offset position = Offset.zero;
-  late Offset velocity;
-
-  final AnimationStateControllerProvider animationState =
-      AnimationStateControllerProvider();
-
+class ReflectAnimationState extends State<ReflectAnimation> {
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    velocity = widget.defaultVelocity;
 
-    switch (animationState.animationControllerState) {
-      case AnimationStateController.start:
-        animationController.repeat();
-        break;
-      case AnimationStateController.stop:
-        animationController.stop();
-        break;
-    }
-
-    animationController.addListener(() {
+    widget.animationController.addListener(() {
       setState(() {
-        if (position.dx < 0 ||
-            position.dx > widget.screen.width - widget.size.width) {
-          velocity = Offset(-velocity.dx, velocity.dy);
-        }
-        if (position.dy < 0 ||
-            position.dy > widget.screen.height - widget.size.height) {
-          velocity = Offset(velocity.dx, -velocity.dy);
-        }
-
-        position += velocity;
+        widget.animateChild.move();
+        checkVelocityDirection();
       });
     });
   }
 
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didUpdateWidget(ReflectAnimation oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.defaultVelocity != oldWidget.defaultVelocity) {
-      setState(() {
-        velocity = widget.defaultVelocity;
-      });
+  void checkVelocityDirection() {
+    if (widget.animateChild.position.dx < 0 ||
+        widget.animateChild.position.dx >
+            widget.screen.width - widget.animateChild.childWidgetSize.width) {
+      widget.animateChild.chengeVelocityDirection('x');
+    }
+    if (widget.animateChild.position.dy < 0 ||
+        widget.animateChild.position.dy >
+            widget.screen.height - widget.animateChild.childWidgetSize.height) {
+      widget.animateChild.chengeVelocityDirection('y');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: animationController,
+        animation: widget.animationController,
         builder: (context, child) => Transform.translate(
-              offset: position,
-              child: widget.child,
+              offset: widget.animateChild.position,
+              child: widget.animateChild.childWidget,
             ));
   }
 }
