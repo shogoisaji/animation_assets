@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class AnimateChild {
   final Widget childWidget;
-  final Size childWidgetSize;
+  Size childWidgetSize;
   Offset position;
   Offset velocity;
 

@@ -1,7 +1,6 @@
 import 'package:animation_assets/animations/bounce_animation.dart';
 import 'package:animation_assets/models/animate_child.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
 class BouncePage extends StatefulWidget {
   const BouncePage({Key? key}) : super(key: key);
@@ -10,18 +9,23 @@ class BouncePage extends StatefulWidget {
   BouncePageState createState() => BouncePageState();
 }
 
+const double defaultSize = 100;
+
 class BouncePageState extends State<BouncePage> with TickerProviderStateMixin {
-  AnimateChild animateChild = AnimateChild(
+  final AnimateChild animateChild = AnimateChild(
     childWidget: Container(
-        width: 100,
-        height: 100,
+        width: defaultSize,
+        height: defaultSize,
         decoration: const BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.fill,
               image: AssetImage('assets/images/elephant.png')),
         )),
-    childWidgetSize: const Size(100, 100),
+    childWidgetSize: const Size(defaultSize, defaultSize),
   );
+
+  double maxBounce = 300;
+  int bounceCount = 3;
 
   late AnimationController animationController;
   late Animation<double> animation;
@@ -71,9 +75,16 @@ class BouncePageState extends State<BouncePage> with TickerProviderStateMixin {
             width: double.infinity,
             color: Colors.grey,
             child: Stack(children: [
+              Center(
+                child: Text('$bounceCount回  H:$maxBounce',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 48,
+                        color: Colors.white)),
+              ),
               Positioned(
                   bottom: 24,
-                  left: 24,
+                  right: 24,
                   child: ElevatedButton(
                       child: isMoving
                           ? const Icon(Icons.stop, color: Colors.black)
@@ -81,18 +92,22 @@ class BouncePageState extends State<BouncePage> with TickerProviderStateMixin {
                       onPressed: () {
                         animationSwitch();
                       })),
-              // Positioned(
-              //     bottom: 64,
-              //     left: 24,
-              //     child: ElevatedButton(
-              //         child: const Icon(Icons.shuffle, color: Colors.black),
-              //         onPressed: () {
-              //           setState(() {
-              //             animateChild.shuffleVelocity();
-              //           });
-              //         })),
-
-              BounceAnimation(animation: animation, animateChild: animateChild),
+              Positioned(
+                  bottom: 64,
+                  right: 24,
+                  child: ElevatedButton(
+                      child: const Icon(Icons.restart_alt, color: Colors.black),
+                      onPressed: () {
+                        setState(() {
+                          isMoving = false;
+                          animationController.reset();
+                        });
+                      })),
+              BounceAnimation(
+                  animation: animation,
+                  animateChild: animateChild,
+                  maxBounce: maxBounce,
+                  bounceCount: bounceCount),
             ]),
           ),
         ),

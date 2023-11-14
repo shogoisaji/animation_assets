@@ -10,6 +10,7 @@ class ReflectPage extends StatefulWidget {
 }
 
 const int randomMax = 20;
+const double defaultSize = 100;
 
 class ReflectPageState extends State<ReflectPage>
     with TickerProviderStateMixin {
@@ -17,16 +18,16 @@ class ReflectPageState extends State<ReflectPage>
   Rect screenSize = Rect.zero;
   bool isMoving = false;
   final GlobalKey _screenContainerKey = GlobalKey();
-  AnimateChild animateChild = AnimateChild(
+  final AnimateChild animateChild = AnimateChild(
     childWidget: Container(
-        width: 100,
-        height: 100,
+        width: defaultSize,
+        height: defaultSize,
         decoration: const BoxDecoration(
           image: DecorationImage(
               fit: BoxFit.fill,
               image: AssetImage('assets/images/elephant.png')),
         )),
-    childWidgetSize: const Size(100, 100),
+    childWidgetSize: const Size(defaultSize, defaultSize),
   );
 
   @override

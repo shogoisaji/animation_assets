@@ -59,20 +59,21 @@ class MainPage extends ConsumerWidget {
           onTap: (int index) {
             ref.read(bottomNavigationBarIndexProvider.notifier).setIndex(index);
             pageController.animateToPage(index,
-                duration: Duration(milliseconds: 300), curve: Curves.ease);
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.ease);
           },
           items: <BottomNavigationBarItem>[
             customBottomNavigationItem(const Icon(Icons.category)),
-            customBottomNavigationItem(const Icon(Icons.grid_on)),
+            customBottomNavigationItem(const Icon(Icons.wifi_channel)),
             customBottomNavigationItem(const Icon(Icons.network_ping)),
-            customBottomNavigationItem(const Icon(Icons.brush)),
-            customBottomNavigationItem(const Icon(Icons.assignment)),
+            customBottomNavigationItem(const Icon(Icons.blur_on_sharp)),
+            customBottomNavigationItem(const Icon(Icons.vertical_align_center)),
           ],
           type: BottomNavigationBarType.fixed,
           backgroundColor: MyTheme.brown,
           selectedFontSize: 0,
           unselectedFontSize: 0,
-          selectedIconTheme: IconThemeData(size: 36, color: Colors.red),
+          selectedIconTheme: const IconThemeData(size: 36, color: Colors.red),
           unselectedIconTheme:
               const IconThemeData(size: 36, color: Colors.white70),
         ),
@@ -80,18 +81,13 @@ class MainPage extends ConsumerWidget {
       body: PageView(
           controller: pageController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
+          children: const [
             DragPage(),
             BouncePage(),
             ReflectPage(),
             PopPage(),
             CollisionPage(),
           ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: MyTheme.brown,
-        child: const Icon(Icons.refresh_sharp, color: Colors.white, size: 36),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
